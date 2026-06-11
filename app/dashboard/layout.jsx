@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { DashboardContext } from '../../components/DashboardContext';
 import { API_BASE_URL } from '../../services/apiConfig';
 import { usePrefetchDashboardData } from '../../hooks/useDashboardData';
-import MetricsGuide from '../../components/MetricsGuide';
 
 const companyStyles = {
   default: {
@@ -101,11 +100,13 @@ export default function DashboardLayout({ children }) {
     currentStyle,
   };
 
+  //  Array completo inserito correttamente
   const menuPages =;
 
   return (
     <DashboardContext.Provider value={ctxValue}>
-      <div className="min-h-screen p-3 md:p-8 font-sans bg-dashboard-light">
+      <div className="min-h-screen p-3 md:p-8 font-sans bg-zinc-50">
+        
         {/* Mobile Drawer */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-[9999] lg:hidden">
@@ -114,7 +115,7 @@ export default function DashboardLayout({ children }) {
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/60">
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Navigazione</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100">
-                  X
+                  ✕
                 </button>
               </div>
               <nav className="flex-1 overflow-y-auto p-3 space-y-1">
@@ -152,7 +153,7 @@ export default function DashboardLayout({ children }) {
                 </div>
               </div>
 
-              {/* Selettore di Proprietà (Dropdown) */}
+              {/* Dropdown Proprietà */}
               {props.length > 0 && (
                 <select
                   value={selectedProp}
@@ -166,7 +167,7 @@ export default function DashboardLayout({ children }) {
               )}
             </div>
 
-            {/* 🚀 NAVIGAZIONE DESKTOP INTEGRATA (Inietta i bottoni da 1 a 9) */}
+            {/* Navigazione Desktop */}
             <nav className="hidden lg:flex items-center gap-1 border-t border-slate-100 pt-2 mt-1">
               {menuPages.map((num) => {
                 const href = `/dashboard/page-${num}`;
