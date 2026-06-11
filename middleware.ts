@@ -18,3 +18,4 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
+export const runtime = 'nodejs';
