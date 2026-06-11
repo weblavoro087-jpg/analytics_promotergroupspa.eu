@@ -1,8 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-// 🚀 Rimosso UserButton da qui
+import { usePathname, useRouter } from 'next/navigation'; // Aggiunto useRouter
 import { DashboardContext } from '../../components/DashboardContext';
 import { API_BASE_URL } from '../../services/apiConfig';
 import { usePrefetchDashboardData } from '../../hooks/useDashboardData';
@@ -38,32 +37,9 @@ const calcPrevDates = (start) => {
   return { start: prevStart, end: prevEndDate.toISOString().split('T')[0] };
 };
 
-const DATE_PRESETS = [
-  { label: '7 giorni', days: 7 },
-  { label: '30 giorni', days: 30 },
-  { label: '90 giorni', days: 90 },
-  { label: 'YoY', days: 365 },
-];
-
-const applyPreset = (preset) => {
-  const end = new Date();
-  end.setDate(end.getDate() - 1);
-  const start = new Date(end);
-  start.setDate(start.getDate() - preset.days);
-  const prevEnd = new Date(start);
-  prevEnd.setDate(prevEnd.getDate() - 1);
-  const prevStart = new Date(prevEnd);
-  prevStart.setDate(prevStart.getDate() - preset.days);
-  return {
-    start: start.toISOString().split('T')[0],
-    end: end.toISOString().split('T')[0],
-    prevStart: prevStart.toISOString().split('T')[0],
-    prevEnd: prevEnd.toISOString().split('T')[0],
-  };
-};
-
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const prefetch = usePrefetchDashboardData();
 
   const [props, setProps] = useState([]);
@@ -71,18 +47,23 @@ export default function DashboardLayout({ children }) {
   const [companyData, setCompanyData] = useState({});
   const [dates, setDates] = useState({ start: '2026-01-01', end: getYesterday() });
   const [compareMode, setCompareMode] = useState(true);
-  const [guideOpen, setGuideOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false); // Stato di controllo
 
-  const applyPresetDates = (preset) => {
-    const { start, end } = applyPreset(preset);
-    setDates({ start, end });
-  };
-
-  const prevDates = calcPrevDates(dates.start);
+  // 🔒 CONTROLLO DI SICUREZZA INTEGRATO SENZA MIDDLEWARE
+  useEffect(() => {
+    // Controlla se esiste il cookie di sblocco nell'applicazione
+    const hasCookie = document.cookie.split('; ').find(row => row.startsWith('site_authenticated='));
+    if (!hasCookie) {
+      // Se il cookie non c'è, rispedisce l'utente al login istantaneamente
+      router.push('/login');
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [router]);
 
   useEffect(() => {
+    if (!isAuthorized) return;
     fetch(`${API_BASE_URL}/api/properties`)
       .then((r) => r.json())
       .then((p) => {
@@ -102,25 +83,14 @@ export default function DashboardLayout({ children }) {
         }
       })
       .catch((err) => console.error('Errore caricamento proprietà:', err));
-  }, []);
+  }, [isAuthorized]);
 
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    document.head.appendChild(link);
-    const preconnect = document.createElement('link');
-    preconnect.rel = 'preconnect';
-    preconnect.href = 'https://tile.openstreetmap.org';
-    document.head.appendChild(preconnect);
-  }, []);
+  // Se l'utente non è ancora verificato, mostra una schermata di caricamento invisibile
+  if (!isAuthorized) {
+    return <div className="min-h-screen bg-zinc-50" />;
+  }
 
-  const handleMouseEnterFilters = () => {
-    if (selectedProp) {
-      prefetch({ selectedProp, dates, prevDates, compareMode });
-    }
-  };
-
+  const prevDates = calcPrevDates(dates.start);
   const currentStyle = companyData[selectedProp] || companyStyles.default;
 
   const ctxValue = {
@@ -138,22 +108,15 @@ export default function DashboardLayout({ children }) {
   return (
     <DashboardContext.Provider value={ctxValue}>
       <div className="min-h-screen p-3 md:p-8 font-sans bg-dashboard-light">
-
         {/* Mobile Drawer */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-[9999] lg:hidden">
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute top-0 left-0 bottom-0 w-72 max-w-[80vw] bg-white/95 backdrop-blur-xl shadow-2xl border-r border-slate-200 flex flex-col animate-in slide-in-from-left duration-300">
+            <div className="absolute top-0 left-0 bottom-0 w-72 max-w-[80vw] bg-white/95 backdrop-blur-xl shadow-2xl border-r border-slate-200 flex flex-col">
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/60">
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Navigazione</span>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-                  type="button"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                <button onClick={() => setMobileMenuOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100">
+                  X
                 </button>
               </div>
               <nav className="flex-1 overflow-y-auto p-3 space-y-1">
@@ -165,22 +128,10 @@ export default function DashboardLayout({ children }) {
                       key={num}
                       href={href}
                       onClick={() => setMobileMenuOpen(false)}
-                      onMouseEnter={() => {
-                        if (selectedProp) {
-                          prefetch({ selectedProp, dates, prevDates, compareMode });
-                        }
-                      }}
                       className={`flex items-center gap-3 px-4 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-200 ${
-                        active
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                        active ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                       }`}
                     >
-                      <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-[9px] font-black ${
-                        active ? 'bg-white/20' : 'bg-slate-100 text-slate-400'
-                      }`}>
-                        {num}
-                      </span>
                       {`PAGINA ${num}`}
                     </Link>
                   );
@@ -191,39 +142,20 @@ export default function DashboardLayout({ children }) {
         )}
 
         <div className="max-w-7xl mx-auto">
-
           {/* Header */}
-          <div
-            className="sticky top-0 z-50 -mx-3 md:-mx-8 px-3 md:px-8 py-2 md:py-3 mb-4 md:mb-6 glass-strong rounded-2xl"
-            onMouseEnter={handleMouseEnterFilters}
-          >
+          <div className="sticky top-0 z-50 -mx-3 md:-mx-8 px-3 md:px-8 py-2 md:py-3 mb-4 md:mb-6 glass-strong rounded-2xl">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3 min-w-0">
-                <button
-                  onClick={() => setMobileMenuOpen(true)}
-                  className="lg:hidden w-11 h-11 shrink-0 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                  aria-label="Apri menu"
-                  type="button"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
+                <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden w-11 h-11 shrink-0 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100">
+                  ☰
                 </button>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-800">{currentStyle.name}</span>
                 </div>
               </div>
-              
-              {/* Desktop Nav Links / Right Actions */}
-              <div className="flex items-center gap-3">
-                {/* 🔒 Se nel codice interrotto era presente il tag <UserButton />, è stato del tutto rimosso per evitare errori */}
-              </div>
             </div>
           </div>
-
-          {/* Main Content Render */}
           <main className="mt-4">{children}</main>
-
         </div>
       </div>
     </DashboardContext.Provider>
