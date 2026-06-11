@@ -101,7 +101,8 @@ export default function DashboardLayout({ children }) {
   };
 
   //  Array completo inserito correttamente
-  const menuPages =;
+const menuPages = Array.from({ length: 9 }, (_, index) => index + 1);
+
 
   return (
     <DashboardContext.Provider value={ctxValue}>
