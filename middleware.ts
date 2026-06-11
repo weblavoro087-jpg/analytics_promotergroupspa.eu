@@ -5,19 +5,20 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const password = process.env.SITE_PASSWORD || 'Promoter2026';
 
-  // 1. Permetti sempre l'accesso alla pagina di login e ai file di sistema/immagini
+  // 1. Permetti sempre l'accesso alla pagina di login, alle API e ai file statici palesi
   if (
-    pathname === '/login' || 
-    pathname.startsWith('/_next') || 
+    pathname === '/login' ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
     pathname.includes('.')
   ) {
     return NextResponse.next();
   }
 
-  // 2. Controlla se l'utente ha il cookie di sblocco valido
+  // 2. Verifica la presenza del cookie di autenticazione
   const isAuthenticated = req.cookies.get('site_authenticated')?.value === password;
 
-  // 3. Se non è autenticato, rimandalo alla pagina di login aziendale
+  // 3. Se l'utente non è autenticato, effettua il reindirizzamento forzato a /login
   if (!isAuthenticated) {
     const loginUrl = new URL('/login', req.url);
     return NextResponse.redirect(loginUrl);
@@ -26,6 +27,9 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+// Configurazione semplificata del matcher accettata nativamente da Next.js/Vercel
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|api/.*).*)',
+  ],
 };
