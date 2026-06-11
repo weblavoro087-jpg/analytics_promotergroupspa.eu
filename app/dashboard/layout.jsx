@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton } from '@clerk/nextjs';
+// 🚀 Rimosso UserButton da qui
 import { DashboardContext } from '../../components/DashboardContext';
 import { API_BASE_URL } from '../../services/apiConfig';
 import { usePrefetchDashboardData } from '../../hooks/useDashboardData';
@@ -197,7 +197,6 @@ export default function DashboardLayout({ children }) {
             className="sticky top-0 z-50 -mx-3 md:-mx-8 px-3 md:px-8 py-2 md:py-3 mb-4 md:mb-6 glass-strong rounded-2xl"
             onMouseEnter={handleMouseEnterFilters}
           >
-            {/* Top row: logo + hamburger + desktop controls */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3 min-w-0">
                 <button
@@ -207,177 +206,24 @@ export default function DashboardLayout({ children }) {
                   type="button"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
-
-                {currentStyle?.logo && (
-                  <img
-                    src={currentStyle.logo}
-                    alt={currentStyle.name}
-                    className="h-8 md:h-12 w-auto object-contain shrink-0"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                )}
-                <img src="/logos/ga.svg" alt="Google Analytics" className="h-6 md:h-8 w-auto object-contain opacity-70 shrink-0" />
-              </div>
-
-              {/* Desktop controls */}
-              <div className="hidden lg:flex flex-wrap gap-4 items-center">
-                <div className="flex flex-wrap gap-3 items-center glass-strong rounded-xl p-1.5">
-                  <select
-                    value={selectedProp}
-                    onChange={(e) => setSelectedProp(e.target.value)}
-                    className="px-3 py-2 rounded-lg font-bold text-xs uppercase tracking-wider outline-none bg-white text-slate-700 border border-slate-200 cursor-pointer min-h-[44px]"
-                  >
-                    <option value="">Seleziona Account...</option>
-                    {props.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-
-                  <div className="flex gap-2 text-xs font-bold items-center border-l border-slate-200 pl-3 text-slate-500">
-                    <input type="date" value={dates.start} onChange={(e) => setDates({ ...dates, start: e.target.value })} className="outline-none bg-transparent cursor-pointer text-slate-700 min-h-[44px]" />
-                    <span>→</span>
-                    <input type="date" value={dates.end} onChange={(e) => setDates({ ...dates, end: e.target.value })} className="outline-none bg-transparent cursor-pointer text-slate-700 min-h-[44px]" />
-                  </div>
-                  <div className="flex gap-1 items-center border-l border-slate-200 pl-3">
-                    {DATE_PRESETS.map((preset) => (
-                      <button
-                        key={preset.label}
-                        onClick={() => applyPresetDates(preset)}
-                        className="px-3 py-2 rounded-md text-[9px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-700 hover:bg-white/80 transition-all min-h-[44px]"
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-800">{currentStyle.name}</span>
                 </div>
-
-                <button
-                  onClick={() => setGuideOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider text-slate-400 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-200 transition-all min-h-[44px]"
-                  type="button"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Guida
-                </button>
-
-                <UserButton afterSignOutUrl="/login" />
               </div>
-
-              {/* Mobile actions */}
-              <div className="flex lg:hidden items-center gap-2">
-                <button
-                  onClick={() => setGuideOpen(true)}
-                  className="w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                  type="button"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </button>
-                <UserButton afterSignOutUrl="/login" />
+              
+              {/* Desktop Nav Links / Right Actions */}
+              <div className="flex items-center gap-3">
+                {/* 🔒 Se nel codice interrotto era presente il tag <UserButton />, è stato del tutto rimosso per evitare errori */}
               </div>
-            </div>
-
-            {/* Mobile filters toggle */}
-            <div className="lg:hidden mt-2">
-              <button
-                onClick={() => setFiltersOpen(!filtersOpen)}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-500 bg-white/60 border border-slate-200/60 hover:bg-white transition-colors min-h-[44px]"
-                type="button"
-              >
-                <span>Filtri e date</span>
-                <svg
-                  className={`w-4 h-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`}
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {filtersOpen && (
-                <div className="mt-2 space-y-3 p-3 bg-white/60 rounded-xl border border-slate-200/60">
-                  <select
-                    value={selectedProp}
-                    onChange={(e) => setSelectedProp(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider outline-none bg-white text-slate-700 border border-slate-200 cursor-pointer"
-                    style={{ fontSize: '16px' }}
-                  >
-                    <option value="">Seleziona Account...</option>
-                    {props.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-
-                  <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
-                    <input
-                      type="date" value={dates.start}
-                      onChange={(e) => setDates({ ...dates, start: e.target.value })}
-                      className="flex-1 px-4 py-3 rounded-lg outline-none bg-white text-slate-700 border border-slate-200 cursor-pointer"
-                      style={{ fontSize: '16px' }}
-                    />
-                    <span>→</span>
-                    <input
-                      type="date" value={dates.end}
-                      onChange={(e) => setDates({ ...dates, end: e.target.value })}
-                      className="flex-1 px-4 py-3 rounded-lg outline-none bg-white text-slate-700 border border-slate-200 cursor-pointer"
-                      style={{ fontSize: '16px' }}
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {DATE_PRESETS.map((preset) => (
-                      <button
-                        key={preset.label}
-                        onClick={() => applyPresetDates(preset)}
-                        className="flex-1 px-3 py-3 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-700 hover:bg-white/80 transition-all border border-slate-200/60"
-                        type="button"
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
-          <MetricsGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
+          {/* Main Content Render */}
+          <main className="mt-4">{children}</main>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex flex-wrap gap-2 mb-8 print:hidden">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
-              const href = `/dashboard/page-${num}`;
-              const active = pathname === href;
-              return (
-                <Link
-                  key={num}
-                  href={href}
-                  onMouseEnter={() => {
-                    if (selectedProp) {
-                      prefetch({ selectedProp, dates, prevDates, compareMode });
-                    }
-                  }}
-                  className={`px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${
-                    active
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-white/60 text-slate-500 border border-slate-200/60 hover:bg-white hover:text-slate-700'
-                  }`}
-                >
-                  {`PAGINA ${num}`}
-                </Link>
-              );
-            })}
-          </div>
-
-          {children}
         </div>
       </div>
     </DashboardContext.Provider>
