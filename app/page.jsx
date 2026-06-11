@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  redirect('/dashboard/page-1');
+  // Riorbita l'utente alla cartella principale della dashboard
+  redirect('/dashboard');
 }
