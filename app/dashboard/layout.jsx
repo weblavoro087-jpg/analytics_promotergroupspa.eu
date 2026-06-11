@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation'; // Aggiunto useRouter
+import { usePathname, useRouter } from 'next/navigation';
 import { DashboardContext } from '../../components/DashboardContext';
 import { API_BASE_URL } from '../../services/apiConfig';
 import { usePrefetchDashboardData } from '../../hooks/useDashboardData';
@@ -48,14 +48,11 @@ export default function DashboardLayout({ children }) {
   const [dates, setDates] = useState({ start: '2026-01-01', end: getYesterday() });
   const [compareMode, setCompareMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false); // Stato di controllo
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
-  // 🔒 CONTROLLO DI SICUREZZA INTEGRATO SENZA MIDDLEWARE
   useEffect(() => {
-    // Controlla se esiste il cookie di sblocco nell'applicazione
     const hasCookie = document.cookie.split('; ').find(row => row.startsWith('site_authenticated='));
     if (!hasCookie) {
-      // Se il cookie non c'è, rispedisce l'utente al login istantaneamente
       router.push('/login');
     } else {
       setIsAuthorized(true);
@@ -85,7 +82,6 @@ export default function DashboardLayout({ children }) {
       .catch((err) => console.error('Errore caricamento proprietà:', err));
   }, [isAuthorized]);
 
-  // Se l'utente non è ancora verificato, mostra una schermata di caricamento invisibile
   if (!isAuthorized) {
     return <div className="min-h-screen bg-zinc-50" />;
   }
@@ -105,6 +101,8 @@ export default function DashboardLayout({ children }) {
     currentStyle,
   };
 
+  const menuPages =;
+
   return (
     <DashboardContext.Provider value={ctxValue}>
       <div className="min-h-screen p-3 md:p-8 font-sans bg-dashboard-light">
@@ -120,7 +118,7 @@ export default function DashboardLayout({ children }) {
                 </button>
               </div>
               <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => {
+                {menuPages.map((num) => {
                   const href = `/dashboard/page-${num}`;
                   const active = pathname === href;
                   return (
@@ -132,7 +130,7 @@ export default function DashboardLayout({ children }) {
                         active ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
                       }`}
                     >
-                      {`PAGINA ${num}`}
+                      PAGINA {num}
                     </Link>
                   );
                 })}
@@ -142,19 +140,57 @@ export default function DashboardLayout({ children }) {
         )}
 
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 -mx-3 md:-mx-8 px-3 md:px-8 py-2 md:py-3 mb-4 md:mb-6 glass-strong rounded-2xl">
+          {/* Header Responsivo */}
+          <div className="sticky top-0 z-50 -mx-3 md:-mx-8 px-5 py-3 mb-6 bg-white/90 backdrop-blur-md border border-slate-200 shadow-sm rounded-2xl flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-3 min-w-0">
                 <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden w-11 h-11 shrink-0 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100">
                   ☰
                 </button>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-800">{currentStyle.name}</span>
+                  <span className="font-bold text-slate-800 text-lg tracking-tight">{currentStyle.name}</span>
                 </div>
               </div>
+
+              {/* Selettore di Proprietà (Dropdown) */}
+              {props.length > 0 && (
+                <select
+                  value={selectedProp}
+                  onChange={(e) => setSelectedProp(e.target.value)}
+                  className="px-3 py-1.5 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 bg-white outline-none cursor-pointer"
+                >
+                  {props.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
+
+            {/* 🚀 NAVIGAZIONE DESKTOP INTEGRATA (Inietta i bottoni da 1 a 9) */}
+            <nav className="hidden lg:flex items-center gap-1 border-t border-slate-100 pt-2 mt-1">
+              {menuPages.map((num) => {
+                const href = `/dashboard/page-${num}`;
+                const active = pathname === href;
+                return (
+                  <Link
+                    key={num}
+                    href={href}
+                    onMouseEnter={() => {
+                      if (selectedProp) prefetch({ selectedProp, dates, prevDates, compareMode });
+                    }}
+                    className={`px-3 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all duration-150 ${
+                      active 
+                        ? 'bg-blue-600 text-white shadow-sm' 
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+                    }`}
+                  >
+                    Pagina {num}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
+
           <main className="mt-4">{children}</main>
         </div>
       </div>
