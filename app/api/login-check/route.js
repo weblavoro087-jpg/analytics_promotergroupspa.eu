@@ -6,9 +6,9 @@ export async function POST(request) {
 
   if (password === correctPassword) {
     const response = NextResponse.json({ success: true });
-    // Salva il cookie per 30 giorni
+    // Modificato httpOnly a false per permettere al layout di leggere lo sblocco
     response.cookies.set('site_authenticated', correctPassword, {
-      httpOnly: true,
+      httpOnly: false, 
       secure: true,
       maxAge: 60 * 60 * 24 * 30,
       path: '/',
