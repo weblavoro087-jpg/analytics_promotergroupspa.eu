@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.9.6",
     "@google-analytics/admin": "^9.0.1",
     "@google-analytics/data": "^4.12.1",
     "@supabase/supabase-js": "^2.106.2",
