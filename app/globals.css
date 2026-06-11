@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-zinc-50 text-slate-800 antialiased;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/45 backdrop-blur-md border border-white/60 shadow-lg shadow-slate-200/40;
+  }
+  .glass-hover {
+    @apply glass hover:bg-white/60 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300;
+  }
+  .glass-strong {
+    @apply bg-white/80 backdrop-blur-lg border border-white/60 shadow-md shadow-slate-200/30;
+    color-scheme: light;
+  }
+  .glass-card {
+    @apply glass-hover rounded-2xl p-6 relative overflow-hidden;
+  }
+  .text-delta-positive {
+    @apply text-emerald-600 font-black;
+  }
+  .text-delta-negative {
+    @apply text-red-500 font-black;
+  }
+}
+
+@layer utilities {
+  .bg-dashboard-light {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #f8fafc 100%);
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  }
+  .scroll-fade-r {
+    position: relative;
+    overflow-x: auto;
+  }
+  .scroll-fade-r::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(to left, rgba(248,250,252,0.9), transparent);
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .scroll-fade-r.is-scrollable::after {
+    opacity: 1;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  nav, .print\:hidden {
+    display: none !important;
+  }
+  .dashboard-page {
+    page-break-after: always;
+    break-inside: avoid;
+  }
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 12px;
+    background: white !important;
+    color: black !important;
+  }
+  .glass, .glass-hover, .glass-strong, .glass-card {
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+  }
+  .min-h-screen {
+    min-height: auto !important;
+    padding: 0 !important;
+  }
+  .max-w-6xl {
+    max-width: 100% !important;
+  }
+  .recharts-wrapper, canvas, svg {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk -F= '/^CLERK_SECRET_KEY=/{print \"len=\"length\\($2\\)\"; prefix=\"substr\\($2,1,7\\)} /^NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=/{print \"pub_len=\"length\\($2\\)\"; pub_prefix=\"substr\\($2,1,7\\)}' .env.local)"
+    ]
+  }
+}
