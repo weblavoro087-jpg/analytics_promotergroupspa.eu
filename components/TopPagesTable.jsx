@@ -61,13 +61,13 @@ const TopPagesTable = React.memo(({ topPages, prevTopPages, compareMode, dates }
             {filteredPages.map((page, i) => {
               const delta = compareMode ? getDelta(page.title) : null;
               return (
-                <tr key={i} className="hover:bg-white/60 transition-colors">
+                <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                   <td className="py-3 text-xs font-bold text-slate-700 truncate max-w-[180px] md:max-w-[200px]">{page.title}</td>
                   <td className="py-3 text-xs font-black text-blue-600 text-right">{page.views}</td>
                   {compareMode && (
                     <td className="py-3 text-right">
                       {delta && (
-                        <span className={`text-[10px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <span className={`text-[10px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {delta.formatted}
                         </span>
                       )}

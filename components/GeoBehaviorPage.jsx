@@ -166,7 +166,7 @@ const GeoBehaviorPage = ({ propertyId, dates, compareMode, prevDates }) => {
                         {city.users.toLocaleString('it-IT')}
                       </span>
                       {delta && (
-                        <span className={`text-[9px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <span className={`text-[9px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {delta.formatted}
                         </span>
                       )}
@@ -196,7 +196,7 @@ const GeoBehaviorPage = ({ propertyId, dates, compareMode, prevDates }) => {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-[10px] border-collapse">
-                <thead className="sticky top-0 z-20 bg-slate-100/60">
+                <thead className="sticky top-0 z-20 bg-slate-50">
                   <tr className="text-[10px] font-black text-slate-500 uppercase tracking-tight border-b border-slate-200/50">
                     <th className="px-3 py-2.5 text-left border-r border-slate-200/50 whitespace-nowrap">Città di Origine</th>
                     <th className="px-3 py-2.5 text-left border-r border-slate-200/50 whitespace-nowrap">Pagina di Atterraggio</th>
@@ -209,11 +209,11 @@ const GeoBehaviorPage = ({ propertyId, dates, compareMode, prevDates }) => {
                   {filteredMatches.map((item, i) => {
                     const delta = compareMode ? calcSmartDelta(item.users, getPrevMatch(item.city, item.url, 'users')) : null;
                     return (
-                      <tr key={i} className="hover:bg-white/60 transition-colors">
+                      <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                         <td className="px-3 py-1.5 font-black uppercase text-slate-700 whitespace-nowrap">{item.city}</td>
                         <td className="px-3 py-1.5 text-[#1A73E8] truncate max-w-[250px] md:max-w-[450px] italic font-medium">{item.url}</td>
                         <td className="px-3 py-1.5 text-right font-bold text-slate-700">{item.users}</td>
-                        {compareMode && <td className="px-3 py-1.5 text-right">{delta ? <span className={`font-black ${delta.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{delta.formatted}</span> : '-'}</td>}
+                        {compareMode && <td className="px-3 py-1.5 text-right">{delta ? <span className={`font-black ${delta.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{delta.formatted}</span> : '-'}</td>}
                         <td className="px-3 py-1.5 text-right font-bold text-slate-500">{item.avgDuration}</td>
                       </tr>
                     );

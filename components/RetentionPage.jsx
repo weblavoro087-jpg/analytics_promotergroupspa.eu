@@ -1,7 +1,10 @@
 'use client';
 import React from 'react';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { API_BASE_URL } from '../services/apiConfig';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 import { useApiQuery } from '../hooks/useApiQuery';
 import { calcSmartDelta } from '../utils/calcDelta';
 import { GA4 } from '../lib/gaColors';
@@ -70,7 +73,7 @@ const RetentionPage = ({ propertyId, dates, compareMode, prevDates }) => {
       <div className="glass rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[11px]">
-            <thead className="bg-slate-100/60 border-b border-slate-200/50 text-slate-500 font-black uppercase">
+            <thead className="bg-slate-50 border-b border-slate-200/50 text-slate-500 font-black uppercase">
               <tr>
                 <th className="px-4 py-3 text-left whitespace-nowrap">Giorno</th>
                 <th className="px-4 py-3 text-right whitespace-nowrap">Utenti Attivi</th>
@@ -88,14 +91,14 @@ const RetentionPage = ({ propertyId, dates, compareMode, prevDates }) => {
                 const deltaNew = compareMode ? calcSmartDelta(row.newUsers, getPrevDay(row.day, 'newUsers')) : null;
                 const deltaReturning = compareMode ? calcSmartDelta(row.returning, getPrevDay(row.day, 'returning')) : null;
                 return (
-                  <tr key={i} className="hover:bg-white/60 transition-colors">
+                  <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                     <td className="px-4 py-2 text-slate-700 font-bold whitespace-nowrap">{row.day}</td>
                     <td className="px-4 py-2 text-right font-bold text-slate-900">{row.active}</td>
-                    {compareMode && <td className="px-4 py-2 text-right">{deltaActive ? <span className={`font-black ${deltaActive.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaActive.formatted}</span> : '-'}</td>}
+                    {compareMode && <td className="px-4 py-2 text-right">{deltaActive ? <span className={`font-black ${deltaActive.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaActive.formatted}</span> : '-'}</td>}
                     <td className="px-4 py-2 text-right text-slate-600">{row.newUsers}</td>
-                    {compareMode && <td className="px-4 py-2 text-right">{deltaNew ? <span className={`font-black ${deltaNew.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaNew.formatted}</span> : '-'}</td>}
+                    {compareMode && <td className="px-4 py-2 text-right">{deltaNew ? <span className={`font-black ${deltaNew.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaNew.formatted}</span> : '-'}</td>}
                     <td className="px-4 py-2 text-right text-blue-600 font-bold">{row.returning}</td>
-                    {compareMode && <td className="px-4 py-2 text-right">{deltaReturning ? <span className={`font-black ${deltaReturning.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaReturning.formatted}</span> : '-'}</td>}
+                    {compareMode && <td className="px-4 py-2 text-right">{deltaReturning ? <span className={`font-black ${deltaReturning.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaReturning.formatted}</span> : '-'}</td>}
                     <td className="px-4 py-2 text-right font-black text-blue-600">{row.retentionRate}%</td>
                   </tr>
                 );

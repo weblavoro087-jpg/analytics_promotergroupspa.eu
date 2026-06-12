@@ -79,7 +79,7 @@ const TimeAnalysisPage = ({ propertyId, dates, compareMode, prevDates }) => {
     if (compareMode && prevVal !== undefined) {
       const delta = val - prevVal;
       if (delta > 10) return 'bg-emerald-200 text-emerald-900';
-      if (delta < -10) return 'bg-red-200 text-red-900';
+      if (delta < -10) return 'bg-rose-200 text-rose-900';
     }
     if (val < 10) return 'bg-blue-100 text-blue-800';
     if (val < 50) return 'bg-blue-300 text-blue-900';
@@ -110,7 +110,7 @@ const TimeAnalysisPage = ({ propertyId, dates, compareMode, prevDates }) => {
                   const delta = ((insights.peak.sessions - prev) / prev * 100);
                   const isPos = delta >= 0;
                   return (
-                    <span className={isPos ? 'text-emerald-500' : 'text-red-500'}>
+                    <span className={isPos ? 'text-emerald-500' : 'text-rose-600'}>
                       {' '}({isPos ? '+' : ''}{delta.toFixed(1)}%)
                     </span>
                   );
@@ -154,12 +154,14 @@ const TimeAnalysisPage = ({ propertyId, dates, compareMode, prevDates }) => {
         </div>
 
         <div className="w-full overflow-x-auto">
-          <table className="w-full table-fixed border-separate border-spacing-[1px]">
+          <table className="w-full min-w-[560px] md:min-w-0 table-fixed border-separate border-spacing-[1px]">
             <thead>
               <tr>
                 <th className="w-8"></th>
                 {hoursLabels.map(h => (
-                  <th key={h} className="text-[6px] md:text-[7px] font-black text-slate-400 uppercase">{h}</th>
+                  <th key={h} className="text-[6px] md:text-[7px] font-black text-slate-400 uppercase">
+                    {visibleHours.includes(h) ? h : ''}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -220,13 +222,13 @@ const TimeAnalysisPage = ({ propertyId, dates, compareMode, prevDates }) => {
           </div>
 
           <div className="bg-red-50/60 backdrop-blur-sm p-6 rounded-2xl border border-red-100/60 flex flex-col justify-center items-center text-center group hover:bg-red-100/80 transition-all duration-300">
-            <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 text-red-500 group-hover:rotate-12 transition-transform">
+            <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-4 text-rose-600 group-hover:rotate-12 transition-transform">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
               </svg>
             </div>
             <p className="text-[9px] font-black text-red-400 uppercase tracking-widest">Giorno Critico (Magra)</p>
-            <p className="text-2xl font-black text-red-600 uppercase italic">{insights.worstDay.label}</p>
+            <p className="text-2xl font-black text-rose-600 uppercase italic">{insights.worstDay.label}</p>
             {compareMode && insights.worstDay.prevTotal > 0 && (() => {
               const delta = ((insights.worstDay.total - insights.worstDay.prevTotal) / insights.worstDay.prevTotal * 100);
               const isPos = delta >= 0;

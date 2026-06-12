@@ -27,22 +27,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif', backgroundColor: '#f3f4f6' }}>
-      <form onSubmit={handleSubmit} style={{ background: '#fff', padding: '40px', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.05)', width: '100%', maxWidth: '400px' }}>
-        <h2 style={{ marginBottom: '10px', fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>Accesso Riservato</h2>
-        <p style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '25px' }}>Inserisci la password di Promotergroup S.p.A.</p>
-        
-        <input 
-          type="password" 
-          placeholder="Password del pannello" 
-          value={password} 
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-sm bg-white p-6 sm:p-10 rounded-xl shadow-lg"
+      >
+        <h2 className="text-2xl font-bold text-gray-900 mb-2.5">Accesso Riservato</h2>
+        <p className="text-sm text-gray-500 mb-6">Inserisci la password di Promotergroup S.p.A.</p>
+
+        <input
+          type="password"
+          placeholder="Password del pannello"
+          value={password}
           onChange={(e) => { setPassword(e.target.value); setError(false); }}
-          style={{ width: '100%', padding: '12px', border: error ? '2px solid #ef4444' : '1px solid #d1d5db', borderRadius: '8px', marginBottom: '15px', boxSizing: 'border-box', outline: 'none' }}
+          className={`w-full px-3 py-3 rounded-lg mb-4 outline-none border ${error ? 'border-2 border-red-500' : 'border-gray-300'}`}
         />
-        
-        {error && <p style={{ color: '#ef4444', fontSize: '0.875rem', marginTop: '-10px', marginBottom: '15px', fontWeight: '500' }}>Password errata. Riprova.</p>}
-        
-        <button type="submit" style={{ width: '100%', padding: '12px', background: '#2563EB', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.95rem', transition: 'background 0.2s' }}>
+
+        {error && <p className="text-sm font-medium text-red-500 -mt-2 mb-4">Password errata. Riprova.</p>}
+
+        <button
+          type="submit"
+          className="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[0.95rem] transition-colors"
+        >
           Entra nel Pannello
         </button>
       </form>

@@ -116,14 +116,14 @@ export default function MetricsGuide({ open, onClose }) {
         </div>
 
         {/* Body */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Sidebar nav */}
-          <div className="w-48 shrink-0 border-r border-slate-200/60 overflow-y-auto bg-slate-50/40 p-3">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          {/* Sidebar nav — orizzontale su mobile, verticale da md in su */}
+          <div className="flex md:flex-col md:w-48 shrink-0 border-b md:border-b-0 md:border-r border-slate-200/60 overflow-x-auto md:overflow-y-auto bg-slate-50/40 p-3 gap-1 md:gap-0">
             {SECTIONS.map((sec) => (
               <button
                 key={sec.id}
                 onClick={() => setActiveSection(sec.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all mb-1 ${
+                className={`shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap md:whitespace-normal md:mb-1 ${
                   activeSection === sec.id
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'text-slate-500 hover:bg-white/80 hover:text-slate-700'

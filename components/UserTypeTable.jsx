@@ -38,13 +38,13 @@ const UserTypeTable = React.memo(({ data, prevData, compareMode }) => {
               const deltaSessions = prevSessions !== null ? calcSmartDelta(row.sessions, prevSessions) : null;
 
               return (
-                <tr key={i} className="hover:bg-white/60 transition-colors">
+                <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                   <td className="px-4 md:px-6 py-4 text-xs font-bold text-slate-700 uppercase whitespace-nowrap">{row.type}</td>
                   <td className="px-4 md:px-6 py-4 text-xs font-black text-slate-900 text-right">{row.users}</td>
                   {compareMode && (
                     <td className="px-4 md:px-6 py-4 text-right">
                       {deltaUsers && (
-                        <span className={`text-[10px] font-black ${deltaUsers.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <span className={`text-[10px] font-black ${deltaUsers.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {deltaUsers.formatted}
                         </span>
                       )}
@@ -54,7 +54,7 @@ const UserTypeTable = React.memo(({ data, prevData, compareMode }) => {
                   {compareMode && (
                     <td className="px-4 md:px-6 py-4 text-right">
                       {deltaSessions && (
-                        <span className={`text-[10px] font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                        <span className={`text-[10px] font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {deltaSessions.formatted}
                         </span>
                       )}

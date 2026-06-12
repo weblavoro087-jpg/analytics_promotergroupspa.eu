@@ -1,5 +1,25 @@
 'use client';
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Forza il ricalcolo delle dimensioni della mappa: su mobile il contenitore
+// flex/grid viene misurato prima di essere stabile, causando tile grigie/tagliate.
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const fix = () => map.invalidateSize();
+    const t = setTimeout(fix, 200);
+    window.addEventListener('resize', fix);
+    window.addEventListener('orientationchange', fix);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('resize', fix);
+      window.removeEventListener('orientationchange', fix);
+    };
+  }, [map]);
+  return null;
+}
 
 const GA4_BLUE = '#1A73E8';
 const GA4_LIGHT = '#8AB4F8';
@@ -44,8 +64,11 @@ export default function GeoMap({ mapData = [] }) {
         center={[41.8719, 12.5674]}
         zoom={6}
         className="h-full w-full z-0"
-        zoomControl={false}
+        zoomControl={true}
+        scrollWheelZoom={false}
+        tap={true}
       >
+        <MapResizer />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'

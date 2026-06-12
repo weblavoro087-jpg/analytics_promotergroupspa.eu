@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import {
+  LayoutDashboard, Megaphone, Globe, MapPin, Smartphone,
+  Target, Repeat, Gauge, Clock, Menu, X, PanelLeftClose, PanelLeftOpen,
+} from 'lucide-react';
 import { DashboardContext } from '../../components/DashboardContext';
 import { API_BASE_URL } from '../../services/apiConfig';
 import { usePrefetchDashboardData } from '../../hooks/useDashboardData';
@@ -20,6 +24,19 @@ const PALETTE = ['#2563EB', '#059669', '#D97706', '#DC2626', '#7C3AED', '#DB2777
 const PALETTE_2 = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
 const hashIndex = (id, len) =>
   id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % len;
+
+// Voci di navigazione: nomi reali + icone Lucide (al posto di "Pagina 1-9")
+const MENU = [
+  { num: 1, name: 'Panoramica', Icon: LayoutDashboard },
+  { num: 2, name: 'Acquisizione', Icon: Megaphone },
+  { num: 3, name: 'Traffico / Pagine', Icon: Globe },
+  { num: 4, name: 'Geografia', Icon: MapPin },
+  { num: 5, name: 'Dispositivi', Icon: Smartphone },
+  { num: 6, name: 'Performance & Conversioni', Icon: Target },
+  { num: 7, name: 'Fidelizzazione', Icon: Repeat },
+  { num: 8, name: 'Qualità Sessioni', Icon: Gauge },
+  { num: 9, name: 'Analisi Temporale', Icon: Clock },
+];
 
 const getYesterday = () => {
   const d = new Date();
@@ -47,6 +64,7 @@ export default function DashboardLayout({ children }) {
   const [dates, setDates] = useState({ start: '2026-01-01', end: getYesterday() });
   const [compareMode, setCompareMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
@@ -100,60 +118,102 @@ export default function DashboardLayout({ children }) {
     currentStyle,
   };
 
-  //  Array completo inserito correttamente
-const menuPages = Array.from({ length: 9 }, (_, index) => index + 1);
-
+  // Lista voci riutilizzata da sidebar desktop e drawer mobile
+  const renderNav = ({ compact = false, onNavigate } = {}) =>
+    MENU.map(({ num, name, Icon }) => {
+      const href = `/dashboard/page-${num}`;
+      const active = pathname === href;
+      return (
+        <Link
+          key={num}
+          href={href}
+          title={compact ? name : undefined}
+          onClick={onNavigate}
+          onMouseEnter={() => {
+            if (selectedProp) prefetch({ selectedProp, dates, prevDates, compareMode });
+          }}
+          className={`flex items-center gap-3 rounded-xl font-bold text-xs transition-all duration-150 ${
+            compact ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
+          } ${
+            active
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
+          }`}
+        >
+          <Icon className="w-[18px] h-[18px] shrink-0" strokeWidth={2.2} />
+          {!compact && <span className="truncate">{name}</span>}
+        </Link>
+      );
+    });
 
   return (
     <DashboardContext.Provider value={ctxValue}>
-      <div className="min-h-screen p-3 md:p-8 font-sans bg-zinc-50">
-        
-        {/* Mobile Drawer */}
+      <div className="min-h-screen flex font-sans bg-zinc-50">
+
+        {/* ── Sidebar fissa (desktop) ── */}
+        <aside
+          className={`hidden lg:flex flex-col shrink-0 sticky top-0 h-screen bg-white/90 backdrop-blur-md border-r border-slate-200 transition-all duration-300 ${
+            collapsed ? 'w-20' : 'w-64'
+          }`}
+        >
+          <div className={`flex items-center gap-2 border-b border-slate-200/60 h-[68px] ${collapsed ? 'justify-center px-2' : 'px-4'}`}>
+            <img src="/logos/logo.png" alt="Promotergroup" className="h-8 w-auto object-contain shrink-0" />
+            {!collapsed && (
+              <>
+                <span className="h-6 w-px bg-slate-200 shrink-0" />
+                <img src="/logos/ga.svg" alt="Google Analytics" className="h-7 w-auto object-contain shrink-0" />
+              </>
+            )}
+          </div>
+
+          <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+            {renderNav({ compact: collapsed })}
+          </nav>
+
+          <button
+            type="button"
+            onClick={() => setCollapsed((v) => !v)}
+            className="flex items-center gap-2 m-3 px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            title={collapsed ? 'Espandi menu' : 'Comprimi menu'}
+          >
+            {collapsed ? <PanelLeftOpen className="w-[18px] h-[18px]" /> : <><PanelLeftClose className="w-[18px] h-[18px]" /> Comprimi</>}
+          </button>
+        </aside>
+
+        {/* ── Drawer (mobile) ── */}
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-[9999] lg:hidden">
             <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
             <div className="absolute top-0 left-0 bottom-0 w-72 max-w-[80vw] bg-white/95 backdrop-blur-xl shadow-2xl border-r border-slate-200 flex flex-col">
               <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200/60">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Navigazione</span>
+                <img src="/logos/logo.png" alt="Promotergroup" className="h-7 w-auto object-contain" />
                 <button onClick={() => setMobileMenuOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100">
-                  ✕
+                  <X className="w-5 h-5" />
                 </button>
               </div>
               <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-                {menuPages.map((num) => {
-                  const href = `/dashboard/page-${num}`;
-                  const active = pathname === href;
-                  return (
-                    <Link
-                      key={num}
-                      href={href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all duration-200 ${
-                        active ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                      }`}
-                    >
-                      PAGINA {num}
-                    </Link>
-                  );
-                })}
+                {renderNav({ onNavigate: () => setMobileMenuOpen(false) })}
               </nav>
             </div>
           </div>
         )}
 
-        <div className="max-w-7xl mx-auto">
-          {/* Header Responsivo */}
-          <div className="sticky top-0 z-50 -mx-3 md:-mx-8 px-5 py-3 mb-6 bg-white/90 backdrop-blur-md border border-slate-200 shadow-sm rounded-2xl flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-3 min-w-0">
-                <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden w-11 h-11 shrink-0 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100">
-                  ☰
-                </button>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-800 text-lg tracking-tight">{currentStyle.name}</span>
-                </div>
-              </div>
+        {/* ── Colonna principale ── */}
+        <div className="flex-1 min-w-0 flex flex-col">
 
+          {/* Top header con hamburger (mobile), proprietà e filtro data */}
+          <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm px-3 md:px-6 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* Hamburger + loghi (solo mobile) */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <button onClick={() => setMobileMenuOpen(true)} className="w-11 h-11 shrink-0 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100">
+                <Menu className="w-5 h-5" />
+              </button>
+              <img src="/logos/logo.png" alt="Promotergroup" className="h-7 w-auto object-contain shrink-0" />
+              <span className="h-6 w-px bg-slate-200 shrink-0" />
+              <img src="/logos/ga.svg" alt="Google Analytics" className="h-6 w-auto object-contain shrink-0" />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 lg:ml-auto">
               {/* Dropdown Proprietà */}
               {props.length > 0 && (
                 <select
@@ -166,34 +226,47 @@ const menuPages = Array.from({ length: 9 }, (_, index) => index + 1);
                   ))}
                 </select>
               )}
+
+              {/* Filtro Data */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 shrink-0">Periodo</span>
+                <div className="flex items-center gap-1.5">
+                  <label className="text-[10px] font-bold text-slate-500">Da</label>
+                  <input
+                    type="date"
+                    value={dates.start}
+                    max={dates.end}
+                    onChange={(e) => setDates((d) => ({ ...d, start: e.target.value }))}
+                    className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 bg-white outline-none cursor-pointer focus:border-blue-400"
+                  />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <label className="text-[10px] font-bold text-slate-500">A</label>
+                  <input
+                    type="date"
+                    value={dates.end}
+                    min={dates.start}
+                    max={getYesterday()}
+                    onChange={(e) => setDates((d) => ({ ...d, end: e.target.value }))}
+                    className="px-2 py-1.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 bg-white outline-none cursor-pointer focus:border-blue-400"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCompareMode((v) => !v)}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${
+                    compareMode
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                  }`}
+                >
+                  ⟳ Confronto
+                </button>
+              </div>
             </div>
+          </header>
 
-            {/* Navigazione Desktop */}
-            <nav className="hidden lg:flex items-center gap-1 border-t border-slate-100 pt-2 mt-1">
-              {menuPages.map((num) => {
-                const href = `/dashboard/page-${num}`;
-                const active = pathname === href;
-                return (
-                  <Link
-                    key={num}
-                    href={href}
-                    onMouseEnter={() => {
-                      if (selectedProp) prefetch({ selectedProp, dates, prevDates, compareMode });
-                    }}
-                    className={`px-3 py-2 rounded-lg font-black text-[10px] uppercase tracking-widest transition-all duration-150 ${
-                      active 
-                        ? 'bg-blue-600 text-white shadow-sm' 
-                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-                    }`}
-                  >
-                    Pagina {num}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-
-          <main className="mt-4">{children}</main>
+          <main className="flex-1 p-3 md:p-6">{children}</main>
         </div>
       </div>
     </DashboardContext.Provider>

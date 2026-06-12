@@ -102,7 +102,7 @@ const SessionQualityPage = ({ propertyId, dates, compareMode, prevDates }) => {
   if (isError) {
     return (
       <div className="glass rounded-xl p-8 text-center">
-        <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-2">ERRORE CARICAMENTO DATI</p>
+        <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-2">ERRORE CARICAMENTO DATI</p>
         <p className="text-xs text-slate-500">{error?.message || 'Impossibile caricare i dati di coinvolgimento'}</p>
       </div>
     );
@@ -120,7 +120,7 @@ const SessionQualityPage = ({ propertyId, dates, compareMode, prevDates }) => {
               <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{label}</p>
               <p className="text-xl md:text-2xl font-black text-slate-900">{value || '—'}</p>
               {delta && (
-                <p className={`text-[10px] font-black mt-1 ${delta.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                <p className={`text-[10px] font-black mt-1 ${delta.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                   {delta.formatted}
                 </p>
               )}
@@ -175,7 +175,7 @@ const SessionQualityPage = ({ propertyId, dates, compareMode, prevDates }) => {
         <div className="overflow-x-auto">
           <table className="w-full text-[11px] border-collapse">
             <thead>
-              <tr className="text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200/50 bg-slate-100/60">
+              <tr className="text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200/50 bg-slate-50">
                 <th className="px-5 py-3 text-left">Sorgente</th>
                 <th className="px-5 py-3 text-right">Sessioni</th>
                 {compareMode && <th className="px-5 py-3 text-right">Δ</th>}
@@ -189,10 +189,10 @@ const SessionQualityPage = ({ propertyId, dates, compareMode, prevDates }) => {
               {filteredSources.map((row, i) => {
                 const deltaSessions = compareMode ? calcSmartDelta(row.sessions, getPrevSource(row.source, 'sessions')) : null;
                 return (
-                  <tr key={i} className="hover:bg-white/60 transition-colors">
+                  <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                     <td className="px-5 py-3 font-bold text-slate-700 capitalize">{row.source}</td>
                     <td className="px-5 py-3 text-right font-semibold text-slate-700">{row.sessions.toLocaleString('it-IT')}</td>
-                    {compareMode && <td className="px-5 py-3 text-right">{deltaSessions ? <span className={`font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaSessions.formatted}</span> : '-'}</td>}
+                    {compareMode && <td className="px-5 py-3 text-right">{deltaSessions ? <span className={`font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaSessions.formatted}</span> : '-'}</td>}
                     <td className="px-5 py-3 text-right font-medium text-slate-600">{row.users.toLocaleString('it-IT')}</td>
                     <td className="px-5 py-3 text-right font-bold" style={{ color: parseFloat(row.engagementRate) > 50 ? '#059669' : parseFloat(row.engagementRate) > 30 ? '#D97706' : '#DC2626' }}>{row.engagementRate}</td>
                     <td className="px-5 py-3 text-right font-medium text-slate-600">{row.bounceRate}</td>

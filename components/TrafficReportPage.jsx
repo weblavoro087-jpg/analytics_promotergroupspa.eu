@@ -11,7 +11,7 @@ const chartColors = GA4_PALETTE.slice(0, 7);
 
 const TableHeader = ({ title, compareMode }) => (
   <thead>
-    <tr className="text-[10px] font-black text-slate-500 uppercase tracking-tight border-b border-slate-200/50 bg-slate-100/60">
+    <tr className="text-[10px] font-black text-slate-500 uppercase tracking-tight border-b border-slate-200/50 bg-slate-50">
       <th className="px-3 py-2.5 text-left border-r border-slate-200/50">{title}</th>
       <th className="px-3 py-2.5 text-right border-r border-slate-200/50 w-24">Totale utenti</th>
       {compareMode && <th className="px-3 py-2.5 text-right border-r border-slate-200/50 w-16">Δ</th>}
@@ -25,7 +25,7 @@ const TableHeader = ({ title, compareMode }) => (
 
 const renderDelta = (delta) => {
   if (!delta) return <span className="text-slate-300">-</span>;
-  return <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-red-500 font-black'}>{delta.formatted}</span>;
+  return <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-rose-600 font-black'}>{delta.formatted}</span>;
 };
 
 const TrafficReportPage = ({ propertyId, dates, compareMode, prevDates }) => {
@@ -108,7 +108,7 @@ const TrafficReportPage = ({ propertyId, dates, compareMode, prevDates }) => {
               <TableHeader title="URL" compareMode={compareMode} />
               <tbody className="divide-y divide-slate-100">
                 {data.pages?.map((item, i) => (
-                  <tr key={i} className="hover:bg-white/60 transition-colors">
+                  <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                     <td className="px-3 py-1.5 text-slate-600 truncate max-w-[250px] md:max-w-[450px] font-medium">{item.url}</td>
                     <td className="px-3 py-1.5 text-right font-bold text-slate-700">{item.users}</td>
                     {compareMode && <td className="px-3 py-1.5 text-right">{renderDelta(calcSmartDelta(item.users, getPrevPage(item.url, 'users')))}</td>}
@@ -136,7 +136,7 @@ const TrafficReportPage = ({ propertyId, dates, compareMode, prevDates }) => {
                 <TableHeader title="Sorgente" compareMode={compareMode} />
                 <tbody className="divide-y divide-slate-100">
                   {data.referrers?.map((item, i) => (
-                    <tr key={i} className="hover:bg-white/60 transition-colors">
+                    <tr key={i} className="hover:bg-slate-50/70 transition-colors">
                       <td className="px-3 py-1.5 text-blue-600 underline font-medium truncate max-w-[200px] md:max-w-[300px]">{item.source}</td>
                       <td className="px-3 py-1.5 text-right font-bold text-slate-700">{item.users}</td>
                       {compareMode && <td className="px-3 py-1.5 text-right">{renderDelta(calcSmartDelta(item.users, getPrevReferrer(item.source, 'users')))}</td>}

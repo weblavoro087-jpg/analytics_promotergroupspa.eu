@@ -10,7 +10,7 @@ const COLORS = GA4_PALETTE;
 
 const TableHeader = ({ title, compareMode }) => (
   <thead>
-    <tr className="text-[10px] font-black text-slate-500 uppercase tracking-tight border-b border-slate-200/50 bg-slate-100/60">
+    <tr className="text-[10px] font-black text-slate-500 uppercase tracking-tight border-b border-slate-200/50 bg-slate-50">
       <th className="px-4 py-3 text-left w-1/3">{title}</th>
       <th className="px-4 py-3 text-right">Totale utenti</th>
       {compareMode && <th className="px-4 py-3 text-right">Δ utenti</th>}
@@ -23,14 +23,14 @@ const TableHeader = ({ title, compareMode }) => (
 );
 
 const Row = ({ item, compareMode, getPrev, channelKey }) => (
-  <tr className="border-b border-slate-100 hover:bg-white/60 transition-colors">
+  <tr className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
     <td className="px-4 py-2.5 text-xs font-bold text-slate-700">{item[channelKey]}</td>
     <td className="px-4 py-2.5 text-xs text-right font-semibold text-slate-700">{item.users}</td>
     {compareMode && (
       <td className="px-4 py-2.5 text-xs text-right">
         {(() => {
           const delta = calcSmartDelta(item.users, getPrev(item[channelKey], 'users'));
-          return delta ? <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-red-500 font-black'}>{delta.formatted}</span> : '-';
+          return delta ? <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-rose-600 font-black'}>{delta.formatted}</span> : '-';
         })()}
       </td>
     )}
@@ -39,7 +39,7 @@ const Row = ({ item, compareMode, getPrev, channelKey }) => (
       <td className="px-4 py-2.5 text-xs text-right">
         {(() => {
           const delta = calcSmartDelta(item.sessions, getPrev(item[channelKey], 'sessions'));
-          return delta ? <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-red-500 font-black'}>{delta.formatted}</span> : '-';
+          return delta ? <span className={delta.isPositive ? 'text-emerald-600 font-black' : 'text-rose-600 font-black'}>{delta.formatted}</span> : '-';
         })()}
       </td>
     )}

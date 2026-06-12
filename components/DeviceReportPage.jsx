@@ -56,7 +56,7 @@ const DeviceReportPage = ({ propertyId, dates, kpiData, prevKpiData, compareMode
                 <p className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">{label}</p>
                 <p className="text-lg md:text-2xl font-black text-slate-900">{kpiData?.[key]}</p>
                 {delta && (
-                  <p className={`text-[10px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+                  <p className={`text-[10px] font-black ${delta.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>
                     {delta.formatted}
                   </p>
                 )}
@@ -70,7 +70,7 @@ const DeviceReportPage = ({ propertyId, dates, kpiData, prevKpiData, compareMode
         <div className="glass rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-[11px]">
-              <thead className="bg-slate-100/60 font-black uppercase text-slate-500 border-b border-slate-200/50">
+              <thead className="bg-slate-50 font-black uppercase text-slate-500 border-b border-slate-200/50">
                 <tr>
                   <th className="px-3 py-3 text-left whitespace-nowrap">Categoria del dispositivo</th>
                   <th className="px-3 py-3 text-right whitespace-nowrap">Totale utenti</th>
@@ -86,12 +86,12 @@ const DeviceReportPage = ({ propertyId, dates, kpiData, prevKpiData, compareMode
                   const deltaUsers = compareMode ? calcSmartDelta(d.users, getPrevDevice(d.category, 'users')) : null;
                   const deltaSessions = compareMode ? calcSmartDelta(d.sessions, getPrevDevice(d.category, 'sessions')) : null;
                   return (
-                    <tr key={i} className="border-b border-slate-100 hover:bg-white/60 transition-colors">
+                    <tr key={i} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
                       <td className="px-3 py-2 font-medium text-slate-700 whitespace-nowrap">{d.category}</td>
                       <td className="px-3 py-2 text-right font-bold text-slate-900">{d.users.toLocaleString()}</td>
-                      {compareMode && <td className="px-3 py-2 text-right">{deltaUsers ? <span className={`font-black ${deltaUsers.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaUsers.formatted}</span> : '-'}</td>}
+                      {compareMode && <td className="px-3 py-2 text-right">{deltaUsers ? <span className={`font-black ${deltaUsers.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaUsers.formatted}</span> : '-'}</td>}
                       <td className="px-3 py-2 text-right font-bold text-slate-900">{d.sessions.toLocaleString()}</td>
-                      {compareMode && <td className="px-3 py-2 text-right">{deltaSessions ? <span className={`font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>{deltaSessions.formatted}</span> : '-'}</td>}
+                      {compareMode && <td className="px-3 py-2 text-right">{deltaSessions ? <span className={`font-black ${deltaSessions.isPositive ? 'text-emerald-600' : 'text-rose-600'}`}>{deltaSessions.formatted}</span> : '-'}</td>}
                       <td className="px-3 py-2 text-right font-bold text-slate-600">{d.bounceRate}</td>
                       <td className="px-3 py-2 text-right font-bold text-slate-600">{d.avgDuration}</td>
                     </tr>

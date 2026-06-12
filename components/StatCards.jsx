@@ -38,7 +38,7 @@ const Sparkline = React.memo(({ data, color }) => {
 Sparkline.displayName = 'Sparkline';
 
 export const StatCard = React.memo(({ title, value, primaryColor, sparklineData }) => (
-  <div className="glass rounded-2xl p-4 md:p-6 relative overflow-hidden group hover:bg-white/60 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+  <div className="glass rounded-2xl p-4 md:p-6 relative overflow-hidden group hover:bg-slate-50/70 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/60 to-transparent pointer-events-none" />
     <div className="flex items-start justify-between">
       <div className="flex-1 min-w-0">
@@ -67,7 +67,7 @@ export const CompareStatCard = React.memo(({ title, current, previous, sparkline
   const currDisplay = current != null ? current : '...';
 
   return (
-    <div className="glass rounded-2xl p-4 md:p-6 relative overflow-hidden group hover:bg-white/60 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+    <div className="glass rounded-2xl p-4 md:p-6 relative overflow-hidden group hover:bg-slate-50/70 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/60 to-transparent pointer-events-none" />
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
@@ -78,7 +78,7 @@ export const CompareStatCard = React.memo(({ title, current, previous, sparkline
           <div className="flex items-baseline gap-2">
             <p className="text-2xl md:text-3xl font-black text-slate-900">{currDisplay}</p>
             {result && (
-              <span className={`text-[11px] md:text-xs font-black ${result.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+              <span className={`text-[11px] md:text-xs ${result.isPositive ? 'delta-up' : 'delta-down'}`}>
                 {result.formatted}
               </span>
             )}
@@ -93,7 +93,7 @@ export const CompareStatCard = React.memo(({ title, current, previous, sparkline
       </div>
       {result && (
         <div
-          className={`absolute bottom-0 left-0 h-1 w-full rounded-b-2xl ${result.isPositive ? 'bg-emerald-500' : 'bg-red-500'} opacity-60`}
+          className={`absolute bottom-0 left-0 h-1 w-full rounded-b-2xl ${result.isPositive ? 'bg-emerald-500' : 'bg-rose-500'} opacity-60`}
         />
       )}
     </div>
